@@ -1,6 +1,6 @@
 from card import Card
 from constants import Constants
-
+from data_structures.array_sorted_list import *
 
 class Player:
     """
@@ -23,6 +23,7 @@ class Player:
         """
         self.name = name
         self.position = position
+        self.hand = ArraySortedList(7)
 
         #toString method
         def __str__(self):
@@ -39,10 +40,10 @@ class Player:
             None
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity:   
+            Worst Case Complexity:  
         """
-        raise NotImplementedError
+        self.hand.add(card)
 
     def play_card(self, index: int) -> Card:
         """
@@ -55,10 +56,10 @@ class Player:
             Card: The card at the given index from the player's hand
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity:   
+            Worst Case Complexity:  
         """
-        raise NotImplementedError
+        return self.hand.delete_at_index(index)
 
     def __len__(self) -> int:
         """
@@ -71,10 +72,10 @@ class Player:
             int: The number of cards in the player's hand
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity:   O(1)
+            Worst Case Complexity:  O(1)
         """
-        raise NotImplementedError
+        return self.hand.length
 
     def __getitem__(self, index: int) -> Card:
         """
@@ -87,7 +88,45 @@ class Player:
             Card: The card at the given index from the player's hand
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity:   O(1)
+            Worst Case Complexity:  O(1)
         """
-        raise NotImplementedError
+        return self.hand.__getitem__(index)
+    
+    # def index(self, item: T) -> int:
+    #      """ Find the position of a given item in the list. """
+    #      for i in range(len(self.__len__())):
+    #          if item == self.hand[i]:
+    #              return i
+    #      raise ValueError("Card not in hand")
+    
+    # # @abstractmethod
+    # def insert(self, index: int, item: T) -> None:
+    #     """ Insert an item at a given position. """
+    #     pass
+        
+    # # @abstractmethod
+    # def __setitem__(self, index: int, item: T) -> None:
+    #     """ Magic method. Insert the item at a given position. """
+    #     self.hand[index] = item
+
+    # # @abstractmethod
+    # def delete_at_index(self, index: int) -> T:
+    #     """ 
+    #     Delete item at a given position. 
+
+    #     Args:
+    #         index (int): The index of the card to be deleted
+
+    #     Returns:
+    #         Card: The card at the given index from the player's hand
+
+    #     Complexity:
+    #         Best Case Complexity:   O(1) - if index is in last position so loop doesn't start
+    #         Worst Case Complexity:  O(len(self.hand.length)) - if index is in the first position so loop runs fully
+    #     """
+    #     item = self.hand[index]
+    #     self.hand.length -= 1
+    #     for i in range (index,self.__len__()):
+    #         self.hand[i] = self.hand[i+1]
+        

@@ -54,7 +54,7 @@ class Card:
     
     #toString() method
     def __str__(self):
-        return f"Card color: {self.color.name}, Card label: {self.label.name})"
+        return f"Card color: {self.color.name}, Card label: {self.label.name}"
 
-card = Card(CardColor.RED,CardLabel.REVERSE)
-print(card.__str__())
+# card = Card(CardColor.BLUE,CardLabel.REVERSE)
+# print(card.__str__())
