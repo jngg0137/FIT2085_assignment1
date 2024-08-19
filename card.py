@@ -46,14 +46,15 @@ class Card:
             None
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity:   O(1)
+            Worst Case Complexity:  O(1)
         """
         self.color = color
         self.label = label
     
+    #toString() method
     def __str__(self):
-        return f"Card(color={self.color.name}, label = {self.label.name})"
+        return f"Card color: {self.color.name}, Card label: {self.label.name})"
 
 card = Card(CardColor.RED,CardLabel.REVERSE)
 print(card.__str__())

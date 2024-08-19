@@ -18,11 +18,15 @@ class Player:
             None
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity:   O(1)
+            Worst Case Complexity:  O(1)
         """
         self.name = name
         self.position = position
+
+        #toString method
+        def __str__(self):
+            return f"Player name: {self.color.name}, Position: {self.label.name})"
 
     def add_card(self, card: Card) -> None:
         """
