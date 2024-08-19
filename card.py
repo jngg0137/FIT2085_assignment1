@@ -49,4 +49,11 @@ class Card:
             Best Case Complexity:
             Worst Case Complexity:
         """
-        raise NotImplementedError
+        self.color = color
+        self.label = label
+    
+    def __repr__(self):
+        return f"Card(color={self.color.name}, label = {self.label.name})"
+
+card = Card(CardColor.RED,CardLabel.REVERSE)
+print(card)
