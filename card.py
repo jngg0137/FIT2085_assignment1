@@ -52,8 +52,8 @@ class Card:
         self.color = color
         self.label = label
     
-    def __repr__(self):
+    def __str__(self):
         return f"Card(color={self.color.name}, label = {self.label.name})"
 
 card = Card(CardColor.RED,CardLabel.REVERSE)
-print(card)
+print(card.__str__())
