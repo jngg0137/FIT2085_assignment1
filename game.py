@@ -3,7 +3,7 @@ from player import Player
 from card import CardColor, CardLabel, Card
 from random_gen import RandomGen
 from constants import Constants
-
+from data_structures.array_sorted_list import *
 
 class Game:
     """
@@ -20,10 +20,15 @@ class Game:
             None
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity:   O(1)
+            Worst Case Complexity:  O(1)
         """
-        raise NotImplementedError
+        self.players = ArraySortedList(2)
+        self.draw_pile = ArraySortedList(112)
+        self.discard_pile = ArraySortedList(112)
+        self.current_player = Player
+        self.current_color = CardColor
+        self.current_label = CardLabel
 
     def generate_cards(self) -> ArrayR[Card]:
         """
@@ -86,7 +91,7 @@ class Game:
             Best Case Complexity:
             Worst Case Complexity:
         """
-        raise NotImplementedError
+        
 
     def crazy_play(self, card: Card) -> None:
         """
