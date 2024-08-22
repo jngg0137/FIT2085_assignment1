@@ -3,7 +3,9 @@ from player import Player
 from card import CardColor, CardLabel, Card
 from random_gen import RandomGen
 from constants import Constants
-from data_structures.array_sorted_list import *
+from data_structures.stack_adt import ArrayStack
+from data_structures.array_sorted_list import ArraySortedList
+from constants import Constants
 
 class Game:
     """
@@ -24,11 +26,11 @@ class Game:
             Worst Case Complexity:  O(1)
         """
         self.players = ArraySortedList(2)
-        self.draw_pile = ArraySortedList(112)
-        self.discard_pile = ArraySortedList(112)
+        self.draw_pile = ArrayStack(Constants.DECK_SIZE)       #stack
+        self.discard_pile = ArrayR(Constants.DECK_SIZE)    #refferential array
         self.current_player = Player
-        self.current_color = CardColor
-        self.current_label = CardLabel
+        self.current_color = None
+        self.current_label = None
 
     def generate_cards(self) -> ArrayR[Card]:
         """
@@ -91,7 +93,30 @@ class Game:
             Best Case Complexity:
             Worst Case Complexity:
         """
-        
+        card_index = 0
+        cards_generated = self.generate_cards()
+        card_dealt = Card
+
+        #deal cards to players until each player has 7 cards
+        while players[0].hand.__len__() < Constants.NUM_CARDS_AT_INIT:
+            for i in range(0,players.__len__() - 1):
+                card_dealt = cards_generated.__getitem__(card_index)
+                print(card_index)
+                print(players[0].hand.__len__())
+                players[i].hand.__setitem__(card_index,card_dealt)
+                card_index += 1
+
+        #add remaining cards to the draw pile
+        for i in range(card_index,Constants.DECK_SIZE-1):
+            self.draw_pile.push(card_dealt)
+
+        #draw card from draw pile and put in discard pile
+        while True:
+            card_drawn = self.draw_pile.pop()
+            self.discard_pile.__setitem__(self.discard_pile.__len__(), card_drawn)
+            if card_drawn.color != CardColor.CRAZY or card_drawn.CardLabel != CardLabel.DRAW_FOUR or CardLabel.DRAW_TWO or CardLabel.REVERSE or CardLabel.SKIP or CardLabel.CRAZY:
+                break
+
 
     def crazy_play(self, card: Card) -> None:
         """
