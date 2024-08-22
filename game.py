@@ -98,12 +98,13 @@ class Game:
         card_dealt = Card
 
         #deal cards to players until each player has 7 cards
-        while players[0].hand.__len__() < Constants.NUM_CARDS_AT_INIT:
-            for i in range(0,players.__len__() - 1):
+        for _ in range(0,Constants.NUM_CARDS_AT_INIT):
+            print("Card index" , _)
+            for i in range(0,players.__len__()-1):
                 card_dealt = cards_generated.__getitem__(card_index)
-                print(card_index)
-                print(players[0].hand.__len__())
-                players[i].hand.__setitem__(card_index,card_dealt)
+                print("Player:",i)
+                players[i].add_card(card_dealt)
+                print("has no. of cards:" , players[i].__len__())
                 card_index += 1
 
         #add remaining cards to the draw pile
@@ -112,8 +113,10 @@ class Game:
 
         #draw card from draw pile and put in discard pile
         while True:
+            counter = 0
             card_drawn = self.draw_pile.pop()
-            self.discard_pile.__setitem__(self.discard_pile.__len__(), card_drawn)
+            self.discard_pile.__setitem__(counter, card_drawn)
+            counter += 1
             if card_drawn.color != CardColor.CRAZY or card_drawn.CardLabel != CardLabel.DRAW_FOUR or CardLabel.DRAW_TWO or CardLabel.REVERSE or CardLabel.SKIP or CardLabel.CRAZY:
                 break
 
