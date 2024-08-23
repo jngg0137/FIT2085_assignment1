@@ -1,6 +1,6 @@
 from card import Card
 from constants import Constants
-from data_structures.aset import ASet
+from data_structures.array_sorted_list import ArraySortedList
 
 class Player:
     """
@@ -23,7 +23,7 @@ class Player:
         """
         self.name = name
         self.position = position
-        self.hand = ASet(7) #need to change to something that can be sorted
+        self.hand = ArraySortedList(Constants.NUM_CARDS_AT_INIT) #need to change to something that can be sorted
 
         #toString method
         def __str__(self):
@@ -59,9 +59,7 @@ class Player:
             Best Case Complexity:   
             Worst Case Complexity:  
         """
-        card_ret = self.__getitem__(index)
-        self.hand.remove(card_ret)
-        return card_ret
+        return self.hand.delete_at_index(index)
 
     def __len__(self) -> int:
         """

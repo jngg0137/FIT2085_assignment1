@@ -55,6 +55,27 @@ class Card:
     #toString() method
     def __str__(self):
         return f"Card color: {self.color.name}, Card label: {self.label.name}"
-
-# card = Card(CardColor.BLUE,CardLabel.REVERSE)
-# print(card.__str__())
+    
+    def __gt__(self,other) -> bool:
+        if self.color > other.color:
+            return True
+        elif self.color == other.color:
+            return self.label > other.label
+        else:
+            return False
+        
+    def __lt__(self, other) -> bool:
+        if self.color < other.color:
+            return True
+        elif self.color == other.color:
+            return self.label < other.label
+        else:
+            return False
+        
+    def __ge__(self, other) -> bool:
+        return self < other or self == other
+    
+    def __le__(self,other) -> bool:
+        if self.color == other.color:
+            return self.label <= other.label
+        return self.color <= other.color

@@ -25,7 +25,7 @@ class Game:
             Best Case Complexity:   O(1)
             Worst Case Complexity:  O(1)
         """
-        self.players = ArraySortedList(2)
+        self.players = ArraySortedList(Constants.MAX_PLAYERS)
         self.draw_pile = ArrayStack(Constants.DECK_SIZE)       #stack
         self.discard_pile = ArrayR(Constants.DECK_SIZE)    #refferential array
         self.current_player = Player
@@ -79,7 +79,7 @@ class Game:
 
                 return list_of_cards
 
-    def initialise_game(self, players: ArrayR[Player]) -> None:
+    def initialise_game(self, new_players: ArrayR[Player]) -> None:
         """
         Method to initialise the game
 
@@ -95,31 +95,37 @@ class Game:
         """
         card_index = 0
         cards_generated = self.generate_cards()
-        card_dealt = Card
+
+        self.players = new_players
 
         #deal cards to players until each player has 7 cards
         for _ in range(0,Constants.NUM_CARDS_AT_INIT):
-            print("Card index" , _)
-            for i in range(0,players.__len__()-1):
+            # print("Card index" , _)
+            for i in range(0,self.players.__len__()):
                 card_dealt = cards_generated.__getitem__(card_index)
-                print("Player:",i)
-                players[i].add_card(card_dealt)
-                print("has no. of cards:" , players[i].__len__())
+                # print("Player:",i)
+                self.players[i].add_card(card_dealt)
+                # print("has no. of cards:" , players[i].__len__() , "after being given", card_dealt.__str__())
                 card_index += 1
 
         #add remaining cards to the draw pile
         for i in range(card_index,Constants.DECK_SIZE-1):
+            card_dealt = cards_generated.__getitem__(i)
             self.draw_pile.push(card_dealt)
+            # print("Card pushed to draw:",card_dealt.__str__())
 
         #draw card from draw pile and put in discard pile
-        while True:
+        continue_draw_cards = True
+        while continue_draw_cards:
             counter = 0
             card_drawn = self.draw_pile.pop()
             self.discard_pile.__setitem__(counter, card_drawn)
             counter += 1
-            if card_drawn.color != CardColor.CRAZY or card_drawn.CardLabel != CardLabel.DRAW_FOUR or CardLabel.DRAW_TWO or CardLabel.REVERSE or CardLabel.SKIP or CardLabel.CRAZY:
-                break
+            if (card_drawn.color != CardColor.CRAZY) and card_drawn.label not in (CardLabel.SKIP, CardLabel.REVERSE, CardLabel.DRAW_TWO, CardLabel.CRAZY, CardLabel.DRAW_FOUR):
+                continue_draw_cards = False
 
+        self.current_color = card_drawn.color
+        self.current_label = card_drawn.label
 
     def crazy_play(self, card: Card) -> None:
         """
