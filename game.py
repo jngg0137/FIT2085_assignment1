@@ -99,27 +99,31 @@ class Game:
         # print(cards_generated.__str__())
 
         #deal cards to players until each player has 7 cards
+        # print("Dealing cards to players..")
         for _ in range(0,Constants.NUM_CARDS_AT_INIT):
-            for i in range(0,self.players.__len__()):
-                card_dealt = cards_generated.__getitem__(card_index)
-                self.players[i].add_card(card_dealt)
+            # print("Dealing card",_)
+            for player in self.players:
+                card_dealt = cards_generated[card_index]
+                player.add_card(card_dealt)
                 card_index += 1
+                # print("Player",i,"was dealt",card_dealt)
 
         #add remaining cards to the draw pile
-        # print("Cards added to draw pile")
-        for i in range(card_index,Constants.DECK_SIZE-1):
-            card_dealt = cards_generated.__getitem__(i)
+        #print("Cards added to draw pile")
+        for i in range(card_index,Constants.DECK_SIZE):
+            card_dealt = cards_generated[i]
             # print(card_dealt.__str__())
             self.draw_pile.push(card_dealt)
 
         #draw card from draw pile and put in discard pile
         continue_draw_cards = True
+        # print("Card put in discard:")
         while continue_draw_cards:
             counter = 0
             card_drawn = self.draw_pile.pop()
-            self.discard_pile.__setitem__(counter, card_drawn)
+            self.discard_pile[counter] = card_drawn
             counter += 1
-            # print("card put in discard:" , card_drawn.__str__())
+            # print(card_drawn.__str__())
             if (card_drawn.color != CardColor.CRAZY) and card_drawn.label not in (CardLabel.SKIP, CardLabel.REVERSE, CardLabel.DRAW_TWO, CardLabel.CRAZY, CardLabel.DRAW_FOUR):
                 continue_draw_cards = False
 
@@ -141,12 +145,18 @@ class Game:
             Best Case Complexity:
             Worst Case Complexity:
         """
-        new_order = ArraySortedList(self.players.__len__())
-        current_order = self.players
-        for i in range(self.players.__len__() - 1,0,-1):
-            player = current_order.__getitem__(i)
-            new_order.add(player)
-        self.players = new_order
+        # new_order = ArraySortedList(self.players.__len__())
+        # current_order = self.players
+        # for i in range(self.players.__len__() - 1,0,-1):
+        #     player = current_order.__getitem__(i)
+        #     new_order.add(player)
+        # self.players = new_order
+        # new_order = ArraySortedList(self.players.__len__())
+        # for i in range(0,self.players.__len__()):
+        #     print(self.players.__len__() - i)
+        #     player = self.players.__getitem__(self.players.__len__() - i)
+        #     new_order.__setitem__(i,player)
+        # self.players = new_order
 
     def play_skip(self) -> None:
         """
@@ -162,9 +172,12 @@ class Game:
             Best Case Complexity:
             Worst Case Complexity:
         """
-        current_index = self.players.index(self.current_player)
-        new_index = current_index + 1
-        new_current_player = self.players.__getitem__(new_index)
+        try:
+            current_index = self.players.index(self.current_player)
+            new_index = current_index + 1
+        except ValueError:
+            new_index = 1
+        new_current_player = self.players[new_index]
         self.current_player = new_current_player
 
     def draw_card(self, player: Player, playing: bool) -> Card | None:
@@ -184,7 +197,7 @@ class Game:
         """
 
         card_drawn = self.draw_pile.pop()
-        print(card_drawn.__str__())
+        # print(card_drawn.__str__())
         if playing:
             if ((card_drawn.color == CardColor.CRAZY)):
                 return card_drawn
@@ -213,10 +226,16 @@ class Game:
             Best Case Complexity:
             Worst Case Complexity:
         """
-        if (self.current_player == None):
-            return self.players.__getitem__(0)
-        index_next_player = self.players.index(self.current_player)
-        return self.players.__getitem__(index_next_player)
+        # if (self.players.__contains__(self.current_player)):
+        #     index_next_player = self.players.index(self.current_player)
+        #     return self.players.__getitem__(index_next_player)
+        # else:
+        #     return self.players.__getitem__(0) 
+        try:
+            index = self.players.index(self.current_player)
+            return self.players[index]
+        except ValueError:
+            return self.players[0]
     
     def crazy_play(self, card: Card) -> None:
         """

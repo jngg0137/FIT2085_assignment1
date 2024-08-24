@@ -75,7 +75,7 @@ class Player:
             Best Case Complexity:   O(1)
             Worst Case Complexity:  O(1)
         """
-        return self.hand.__len__()
+        return self.hand.length
 
     def __getitem__(self, index: int) -> Card:
         """
@@ -91,4 +91,24 @@ class Player:
             Best Case Complexity:   O(1)
             Worst Case Complexity:  O(1)
         """
-        return self.hand.__getitem__(index)
+        return self.hand[index]
+
+    # def __gt__(self,other) -> bool:
+    #     if self.position > other.position:
+    #         return True
+    #     else:
+    #         return False
+        
+    # def __lt__(self, other) -> bool:
+    #     if self.position < other.position:
+    #         return True
+    #     else:
+    #         return False
+        
+    # def __ge__(self, other) -> bool:
+    #     return self < other or self == other
+    
+    # def __le__(self,other) -> bool:
+    #     if self.color == other.color:
+    #         return self.label <= other.label
+    #     return self.color <= other.color
