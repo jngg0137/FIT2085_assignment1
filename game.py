@@ -26,8 +26,8 @@ class Game:
             Worst Case Complexity:  O(1)
         """
         self.players = ArraySortedList(Constants.MAX_PLAYERS)
-        self.draw_pile = ArrayStack(Constants.DECK_SIZE)       #stack
-        self.discard_pile = ArrayR(Constants.DECK_SIZE)    #refferential array
+        self.draw_pile = ArrayStack(Constants.DECK_SIZE)
+        self.discard_pile = ArrayR(Constants.DECK_SIZE)
         self.current_player = Player
         self.current_color = None
         self.current_label = None
@@ -95,24 +95,22 @@ class Game:
         """
         card_index = 0
         cards_generated = self.generate_cards()
-
         self.players = new_players
+        # print(cards_generated.__str__())
 
         #deal cards to players until each player has 7 cards
         for _ in range(0,Constants.NUM_CARDS_AT_INIT):
-            # print("Card index" , _)
             for i in range(0,self.players.__len__()):
                 card_dealt = cards_generated.__getitem__(card_index)
-                # print("Player:",i)
                 self.players[i].add_card(card_dealt)
-                # print("has no. of cards:" , players[i].__len__() , "after being given", card_dealt.__str__())
                 card_index += 1
 
         #add remaining cards to the draw pile
+        # print("Cards added to draw pile")
         for i in range(card_index,Constants.DECK_SIZE-1):
             card_dealt = cards_generated.__getitem__(i)
+            # print(card_dealt.__str__())
             self.draw_pile.push(card_dealt)
-            # print("Card pushed to draw:",card_dealt.__str__())
 
         #draw card from draw pile and put in discard pile
         continue_draw_cards = True
@@ -121,27 +119,13 @@ class Game:
             card_drawn = self.draw_pile.pop()
             self.discard_pile.__setitem__(counter, card_drawn)
             counter += 1
+            # print("card put in discard:" , card_drawn.__str__())
             if (card_drawn.color != CardColor.CRAZY) and card_drawn.label not in (CardLabel.SKIP, CardLabel.REVERSE, CardLabel.DRAW_TWO, CardLabel.CRAZY, CardLabel.DRAW_FOUR):
                 continue_draw_cards = False
 
         self.current_color = card_drawn.color
-        self.current_label = card_drawn.label
-
-    def crazy_play(self, card: Card) -> None:
-        """
-        Method to play a crazy card
-
-        Args:
-            card (Card): The card to be played
-
-        Returns:
-            None
-
-        Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
-        """
-        raise NotImplementedError
+        self.current_label = card_drawn.label            
+        # print("Current ",card_drawn.__str__())
 
     def play_reverse(self) -> None:
         """
@@ -157,7 +141,12 @@ class Game:
             Best Case Complexity:
             Worst Case Complexity:
         """
-        raise NotImplementedError
+        new_order = ArraySortedList(self.players.__len__())
+        current_order = self.players
+        for i in range(self.players.__len__() - 1,0,-1):
+            player = current_order.__getitem__(i)
+            new_order.add(player)
+        self.players = new_order
 
     def play_skip(self) -> None:
         """
@@ -173,7 +162,10 @@ class Game:
             Best Case Complexity:
             Worst Case Complexity:
         """
-        raise NotImplementedError
+        current_index = self.players.index(self.current_player)
+        new_index = current_index + 1
+        new_current_player = self.players.__getitem__(new_index)
+        self.current_player = new_current_player
 
     def draw_card(self, player: Player, playing: bool) -> Card | None:
         """
@@ -190,7 +182,22 @@ class Game:
             Best Case Complexity:
             Worst Case Complexity:
         """
-        raise NotImplementedError
+
+        card_drawn = self.draw_pile.pop()
+        print(card_drawn.__str__())
+        if playing:
+            if ((card_drawn.color == CardColor.CRAZY)):
+                return card_drawn
+            elif (card_drawn.color == self.current_color):
+                self.current_label = card_drawn.label
+                return card_drawn
+            elif ((card_drawn.label == self.current_label)):
+                self.current_color = card_drawn.color
+                return card_drawn
+            else:
+                 player.add_card(card_drawn)
+        else:
+            player.add_card(card_drawn)
 
     def next_player(self) -> Player:
         """
@@ -206,7 +213,30 @@ class Game:
             Best Case Complexity:
             Worst Case Complexity:
         """
-        raise NotImplementedError
+        if (self.current_player == None):
+            return self.players.__getitem__(0)
+        index_next_player = self.players.index(self.current_player)
+        return self.players.__getitem__(index_next_player)
+    
+    def crazy_play(self, card: Card) -> None:
+        """
+        Method to play a crazy card
+
+        Args:
+            card (Card): The card to be played
+
+        Returns:
+            None
+
+        Complexity:
+            Best Case Complexity:
+            Worst Case Complexity:
+        """
+        if (card.label == CardLabel.DRAW_FOUR):
+            for _ in range(4):
+                self.next_player().draw_card(False)
+        else:
+            self.current_color = CardColor(RandomGen.randint(0,3))
 
     def play_game(self) -> Player:
         """
