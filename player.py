@@ -109,6 +109,6 @@ class Player:
     #     return self < other or self == other
     
     # def __le__(self,other) -> bool:
-    #     if self.color == other.color:
-    #         return self.label <= other.label
-    #     return self.color <= other.color
+    #     # if self.color == other.color:
+    #     #     return self.label <= other.label
+    #     return self.position <= other.position

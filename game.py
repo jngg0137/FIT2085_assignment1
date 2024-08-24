@@ -145,18 +145,9 @@ class Game:
             Best Case Complexity:
             Worst Case Complexity:
         """
-        # new_order = ArraySortedList(self.players.__len__())
-        # current_order = self.players
-        # for i in range(self.players.__len__() - 1,0,-1):
-        #     player = current_order.__getitem__(i)
-        #     new_order.add(player)
-        # self.players = new_order
-        # new_order = ArraySortedList(self.players.__len__())
-        # for i in range(0,self.players.__len__()):
-        #     print(self.players.__len__() - i)
-        #     player = self.players.__getitem__(self.players.__len__() - i)
-        #     new_order.__setitem__(i,player)
-        # self.players = new_order
+        self.players = self.players[::-1]
+        # for player in self.players:
+        #     print(player.name)
 
     def play_skip(self) -> None:
         """
@@ -253,9 +244,8 @@ class Game:
         """
         if (card.label == CardLabel.DRAW_FOUR):
             for _ in range(4):
-                self.next_player().draw_card(False)
-        else:
-            self.current_color = CardColor(RandomGen.randint(0,3))
+                self.draw_card(self.next_player(),False)
+        self.current_color = CardColor(RandomGen.randint(0,3))
 
     def play_game(self) -> Player:
         """
