@@ -90,6 +90,8 @@ class ArraySortedList(SortedList[T]):
         pos = self._index_to_add(item)
         if pos < len(self) and self[pos] == item:
             return pos
+        print("len(self):",len(self))
+        print("pos:",pos)
         raise ValueError('item not in list')
 
     def is_full(self) -> bool:

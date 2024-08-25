@@ -106,7 +106,7 @@ class Game:
                 card_dealt = cards_generated[card_index]
                 player.add_card(card_dealt)
                 card_index += 1
-                # print("Player",i,"was dealt",card_dealt)
+                # print("Player",player.name,"was dealt",card_dealt)
 
         #add remaining cards to the draw pile
         #print("Cards added to draw pile")
@@ -130,6 +130,39 @@ class Game:
         self.current_color = card_drawn.color
         self.current_label = card_drawn.label            
         # print("Current ",card_drawn.__str__())
+
+    def refill_draw_pile(self) -> None:
+        """
+        Method to shuffle discard pile and place in draw pile
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        Complexity:
+            Best Case Complexity:
+            Worst Case Complexity:
+        """
+        stored_card = self.discard_pile[-1]
+        print(stored_card.__str__())
+        last_index = self.discard_pile.index(stored_card)
+
+        #shuffle discard pile and store all of it (except stored_card) in another array to shuffle
+        temp_array_index = 0
+        temp_array = ArrayR(len(self.discard_pile))
+        for i in range(last_index - 1, 0,-1):
+            temp_array[temp_array_index] = self.discard_pile[i]
+            temp_array_index += 1
+        RandomGen.random_shuffle(temp_array)
+
+        #add cards from shuffled array back to draw pile such that last index is on top, stored_card goes to discard pile
+        for card in temp_array:
+            self.draw_pile.push(card)
+        self.discard_pile = ArrayR(Constants.DECK_SIZE)
+        self.discard_pile[0] = stored_card
+        prompt_user = input("Discard pile reshuffled")
 
     def play_reverse(self) -> None:
         """
@@ -168,6 +201,13 @@ class Game:
             new_index = current_index + 1
         except ValueError:
             new_index = 1
+        # except IndexError:
+        #     new_index = 0
+            return None
+        # if (new_index == len(self.players)):
+        #     new_index -= 1
+        if (new_index == len(self.players)):
+            new_index = 0
         new_current_player = self.players[new_index]
         self.current_player = new_current_player
 
@@ -186,9 +226,10 @@ class Game:
             Best Case Complexity:
             Worst Case Complexity:
         """
-
+        if (len(self.draw_pile) == 0):
+            self.refill_draw_pile()
         card_drawn = self.draw_pile.pop()
-        # print(card_drawn.__str__())
+        print("Card drawn from pile:",card_drawn.__str__())
         if playing:
             if ((card_drawn.color == CardColor.CRAZY)):
                 return card_drawn
@@ -200,6 +241,7 @@ class Game:
                 return card_drawn
             else:
                  player.add_card(card_drawn)
+                 return None
         else:
             player.add_card(card_drawn)
 
@@ -217,15 +259,12 @@ class Game:
             Best Case Complexity:
             Worst Case Complexity:
         """
-        # if (self.players.__contains__(self.current_player)):
-        #     index_next_player = self.players.index(self.current_player)
-        #     return self.players.__getitem__(index_next_player)
-        # else:
-        #     return self.players.__getitem__(0) 
         try:
             index = self.players.index(self.current_player)
-            return self.players[index]
+            return self.players[index + 1]
         except ValueError:
+            return self.players[0]
+        except IndexError:
             return self.players[0]
     
     def crazy_play(self, card: Card) -> None:
@@ -245,7 +284,57 @@ class Game:
         if (card.label == CardLabel.DRAW_FOUR):
             for _ in range(4):
                 self.draw_card(self.next_player(),False)
+            self.play_skip()
         self.current_color = CardColor(RandomGen.randint(0,3))
+
+    def check_hand(self, hand: ArraySortedList[Card]) -> Card | str:
+        """
+        Method to check if player hand contains a card that can be played
+
+        Args:
+            hand (ArraySortedList[Card]): The player's hand
+
+        Returns:
+            Card - When playable card in hand is found, other return None
+
+        Complexity:
+            Best Case Complexity:
+            Worst Case Complexity:
+        """
+        for card_index in range(0,hand.length):
+            if (hand[card_index].color == self.current_color) or (hand[card_index].label == self.current_label) or (hand[card_index].color == CardColor.CRAZY):
+                return hand[card_index]
+        ret = "No playable card"
+        return ret
+    
+    def play_card(self,card:Card) -> None:
+        """
+        Method to play a card. If it's a card that isn't numbered, carry out their effects
+
+        Args:
+            card (Card): The card to be played
+
+        Returns:
+            None
+
+        Complexity:
+            Best Case Complexity:
+            Worst Case Complexity:
+        """
+        if (card.label == CardLabel.REVERSE):
+            self.play_reverse()
+        elif (card.label == CardLabel.SKIP):
+            self.play_skip()
+        elif (card.color == CardColor.CRAZY):
+            self.crazy_play(card)
+        elif (card.label == CardLabel.DRAW_TWO):
+            for _ in range(2):
+                self.draw_card(self.next_player(),False)
+            self.play_skip()
+
+        if (card.color != CardColor.CRAZY):
+            self.current_color = card.color
+        self.current_label = card.label
 
     def play_game(self) -> Player:
         """
@@ -261,10 +350,44 @@ class Game:
             Best Case Complexity:
             Worst Case Complexity:
         """
-        raise NotImplementedError
+        rounds = 1
+        print("\n-------------- Game start! --------------")
+        while True:
+            print("\n----------------- Round",rounds,"-----------------")
+            print("Current color:",self.current_color)
+            print("Current label:",self.current_label)
+            player = self.next_player()
+            self.current_player = player
 
+            #display player info
+            for player_display in self.players:
+                print(player_display.name,"(" , player_display.hand.length , ")")
+                display = ""
+                for card_index in range(0,player_display.hand.length):
+                    display += player_display.hand[card_index].__str__()
+                print(" ".join(["Cards:",display]))
+
+            #check player hand to see if there are playable cards
+            playableCard = self.check_hand(player.hand)
+            if (playableCard == "No playable card"):
+                print(player.name,"had no card to play in deck and drew from draw pile")
+                drawn_card = self.draw_card(player,True)
+                if isinstance(drawn_card,Card):
+                    print("!!THE DRAWN CARD MATCHES AND IS PLAYED!!")
+                    self.play_card(drawn_card)
+            else:
+                print(player.name,"played a card: ", playableCard.__str__())
+                player.hand.delete_at_index(player.hand.index(playableCard))
+                self.play_card(playableCard)
+            
+            #check if player hand is empty
+            if (player.hand.length == 0):
+                print(player.name,"has discarded all their cards")
+                return player
+            rounds += 1
 
 def test_case():
+    # RandomGen.set_seed(1802)
     players: ArrayR[Player] = ArrayR(4)
     players[0] = Player("Alice", 0)
     players[1] = Player("Bob", 1)

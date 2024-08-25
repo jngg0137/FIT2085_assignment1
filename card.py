@@ -32,7 +32,6 @@ class CardLabel(IntEnum):
     CRAZY = auto()
     DRAW_FOUR = auto()
 
-
 class Card:
     def __init__(self, color: CardColor, label: CardLabel) -> None:
         """
@@ -52,7 +51,6 @@ class Card:
         self.color = color
         self.label = label
     
-    #toString() method
     def __str__(self):
         return f"Card color: {self.color.name}, Card label: {self.label.name}"
     
@@ -79,3 +77,8 @@ class Card:
         if self.color == other.color:
             return self.label <= other.label
         return self.color <= other.color
+    
+    def __eq__(self,other) -> bool:
+        if isinstance(other, Card):
+            return self.color == other.color and self.label == other.label
+        return False
