@@ -23,11 +23,10 @@ class Player:
         """
         self.name = name
         self.position = position
-        self.hand = ArraySortedList(Constants.NUM_CARDS_AT_INIT) #need to change to something that can be sorted
+        self.hand = ArraySortedList(Constants.NUM_CARDS_AT_INIT)
 
-        #toString method
-        def __str__(self):
-            return f"Player name: {name}, Position: {position})"
+    def __str__(self):
+            return f"Player name: {self.name}, Position: {self.position})"
 
     def add_card(self, card: Card) -> None:
         """
@@ -92,23 +91,3 @@ class Player:
             Worst Case Complexity:  O(1)
         """
         return self.hand[index]
-
-    # def __gt__(self,other) -> bool:
-    #     if self.position > other.position:
-    #         return True
-    #     else:
-    #         return False
-        
-    # def __lt__(self, other) -> bool:
-    #     if self.position < other.position:
-    #         return True
-    #     else:
-    #         return False
-        
-    # def __ge__(self, other) -> bool:
-    #     return self < other or self == other
-    
-    # def __le__(self,other) -> bool:
-    #     # if self.color == other.color:
-    #     #     return self.label <= other.label
-    #     return self.position <= other.position

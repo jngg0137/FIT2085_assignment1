@@ -27,7 +27,7 @@ class Game:
         """
         self.players = ArraySortedList(Constants.MAX_PLAYERS)
         self.draw_pile = ArrayStack(Constants.DECK_SIZE)
-        self.discard_pile = ArrayR(Constants.DECK_SIZE)
+        self.discard_pile = ArrayStack(Constants.DECK_SIZE)
         self.current_player = Player
         self.current_color = None
         self.current_label = None
@@ -119,10 +119,8 @@ class Game:
         continue_draw_cards = True
         # print("Card put in discard:")
         while continue_draw_cards:
-            counter = 0
             card_drawn = self.draw_pile.pop()
-            self.discard_pile[counter] = card_drawn
-            counter += 1
+            self.discard_pile.push(card_drawn)
             # print(card_drawn.__str__())
             if (card_drawn.color != CardColor.CRAZY) and card_drawn.label not in (CardLabel.SKIP, CardLabel.REVERSE, CardLabel.DRAW_TWO, CardLabel.CRAZY, CardLabel.DRAW_FOUR):
                 continue_draw_cards = False
@@ -145,24 +143,23 @@ class Game:
             Best Case Complexity:
             Worst Case Complexity:
         """
-        stored_card = self.discard_pile[-1]
+        stored_card = self.discard_pile.pop()
         print(stored_card.__str__())
-        last_index = self.discard_pile.index(stored_card)
 
         #shuffle discard pile and store all of it (except stored_card) in another array to shuffle
         temp_array_index = 0
-        temp_array = ArrayR(len(self.discard_pile))
-        for i in range(last_index - 1, 0,-1):
-            temp_array[temp_array_index] = self.discard_pile[i]
+        discard_length = self.discard_pile.length
+        temp_array = ArrayR(discard_length)
+        for _ in range(discard_length):
+            temp_array[temp_array_index] = self.discard_pile.pop()
             temp_array_index += 1
         RandomGen.random_shuffle(temp_array)
 
         #add cards from shuffled array back to draw pile such that last index is on top, stored_card goes to discard pile
         for card in temp_array:
             self.draw_pile.push(card)
-        self.discard_pile = ArrayR(Constants.DECK_SIZE)
-        self.discard_pile[0] = stored_card
-        prompt_user = input("Discard pile reshuffled")
+        self.discard_pile = ArrayStack(Constants.DECK_SIZE)
+        self.discard_pile.push(stored_card)
 
     def play_reverse(self) -> None:
         """
@@ -179,8 +176,6 @@ class Game:
             Worst Case Complexity:
         """
         self.players = self.players[::-1]
-        # for player in self.players:
-        #     print(player.name)
 
     def play_skip(self) -> None:
         """
@@ -201,13 +196,10 @@ class Game:
             new_index = current_index + 1
         except ValueError:
             new_index = 1
-        # except IndexError:
-        #     new_index = 0
-            return None
-        # if (new_index == len(self.players)):
-        #     new_index -= 1
+            ## return None
         if (new_index == len(self.players)):
             new_index = 0
+        print("play_skip")
         new_current_player = self.players[new_index]
         self.current_player = new_current_player
 
@@ -261,8 +253,9 @@ class Game:
         """
         try:
             index = self.players.index(self.current_player)
-            return self.players[index + 1]
+            return self.players[index+1]
         except ValueError:
+            print("next_player")
             return self.players[0]
         except IndexError:
             return self.players[0]
