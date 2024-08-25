@@ -90,8 +90,8 @@ class Game:
             None
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity:   O(n) - where n is the number of cards and number of players
+            Worst Case Complexity:  O(n) - where n is the number of cards and number of players
         """
         card_index = 0
         cards_generated = self.generate_cards()
@@ -140,8 +140,8 @@ class Game:
             None
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity:   O(n) - where n is length of cards originally in discard pile and cards in temp_array
+            Worst Case Complexity:  O(n) - where n is length of cards originally in discard pile and cards in temp_array
         """
         stored_card = self.discard_pile.pop()
         print(stored_card.__str__())
@@ -172,8 +172,8 @@ class Game:
             None
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity:   O(1)
+            Worst Case Complexity:  O(1)
         """
         self.players = self.players[::-1]
 
@@ -188,20 +188,10 @@ class Game:
             None
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity:   O(1) - index of current_player is found immediately
+            Worst Case Complexity:  O(log n) - binary search is carried out to find index of current_player
         """
-        try:
-            current_index = self.players.index(self.current_player)
-            new_index = current_index + 1
-        except ValueError:
-            new_index = 1
-            ## return None
-        if (new_index == len(self.players)):
-            new_index = 0
-        print("play_skip")
-        new_current_player = self.players[new_index]
-        self.current_player = new_current_player
+        self.current_player = self.next_player()
 
     def draw_card(self, player: Player, playing: bool) -> Card | None:
         """
@@ -215,8 +205,8 @@ class Game:
             Card - When drawing a playable card, other return None
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity:   O(1) - Card is drawn directly
+            Worst Case Complexity:  O(n) - Card is added to player hand
         """
         if (len(self.draw_pile) == 0):
             self.refill_draw_pile()
@@ -248,14 +238,13 @@ class Game:
             Player: The next player
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity: O(1) - index of current_player is found immediately
+            Worst Case Complexity: O(log n) - binary search is carried out to find index of current_player
         """
         try:
             index = self.players.index(self.current_player)
             return self.players[index+1]
         except ValueError:
-            print("next_player")
             return self.players[0]
         except IndexError:
             return self.players[0]
@@ -271,8 +260,8 @@ class Game:
             None
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity:   O(1) - Card has CRAZY label and only random color is generated
+            Worst Case Complexity:  O(log n) - binary search is carried out to find index of current_player when skipping next player
         """
         if (card.label == CardLabel.DRAW_FOUR):
             for _ in range(4):
@@ -291,8 +280,8 @@ class Game:
             Card - When playable card in hand is found, other return None
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity:   O(1) - card is found immediately
+            Worst Case Complexity:  O(n) - where n is number of cards in player hand
         """
         for card_index in range(0,hand.length):
             if (hand[card_index].color == self.current_color) or (hand[card_index].label == self.current_label) or (hand[card_index].color == CardColor.CRAZY):
@@ -311,8 +300,8 @@ class Game:
             None
 
         Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
+            Best Case Complexity:   O(1) - card doesn't have CRAZY color and is has number as its label
+            Worst Case Complexity:  O(log n) - binary search is carried out to find index of next player
         """
         if (card.label == CardLabel.REVERSE):
             self.play_reverse()
@@ -339,9 +328,6 @@ class Game:
         Returns:
             Player: The winner of the game
 
-        Complexity:
-            Best Case Complexity:
-            Worst Case Complexity:
         """
         rounds = 1
         print("\n-------------- Game start! --------------")

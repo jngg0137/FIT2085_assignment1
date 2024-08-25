@@ -39,8 +39,8 @@ class Player:
             None
 
         Complexity:
-            Best Case Complexity:   
-            Worst Case Complexity:  
+            Best Case Complexity:   O(1) 
+            Worst Case Complexity:  O(log n) - where n is the number of cards in player hand
         """
         self.hand.add(card)
 
@@ -55,8 +55,8 @@ class Player:
             Card: The card at the given index from the player's hand
 
         Complexity:
-            Best Case Complexity:   
-            Worst Case Complexity:  
+            Best Case Complexity:   O(1) 
+            Worst Case Complexity:  O(log n) where n is the number of cards in player hand
         """
         return self.hand.delete_at_index(index)
 
